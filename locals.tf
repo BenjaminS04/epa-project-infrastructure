@@ -1,3 +1,4 @@
+# user data for the instances
 locals {
   instances = {
     target = <<-EOF
