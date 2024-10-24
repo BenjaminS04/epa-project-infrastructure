@@ -36,7 +36,7 @@ module "ec2" {   # ec2 module
   subnet_id          = module.vpc.subnet_id
   instance_name      = "${each.key}-test-instance" 
   bucket_name        = module.s3_bucket.bucket_name
-  iam_instance_profile= module.iam_policies.iam_instance_profile
+  iam_instance_profile= "${each.key}_${module.iam_policies.iam_instance_profile}"
   additional_user_data = each.value
 }
 
