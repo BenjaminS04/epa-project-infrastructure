@@ -23,6 +23,10 @@ resource "aws_instance" "ec2" {
               ${var.additional_user_data}
               EOF
   
+  lifecycle {
+    create_before_destroy = true # makes sure old resource stays live until new one is created to minimize down time
+  }
+
 
   # adds security group and subnet
   vpc_security_group_ids = [var.security_group_id]
@@ -31,5 +35,8 @@ resource "aws_instance" "ec2" {
   tags = {
     # names instance
     Name = "${var.instance_name}"
+    
+    # makes only the instance for the monitor app is recreated, so its user data is rerun
+    recreate_trigger = var.each_key == "monitor" ? timestamp() : "no recreate"  
   }
 }

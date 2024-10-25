@@ -38,6 +38,7 @@ module "ec2" {   # ec2 module
   bucket_name        = module.s3_bucket.bucket_name
   iam_instance_profile= "${each.key}_${module.iam_policies.iam_instance_profile}"
   additional_user_data = each.value
+  each_key=  "${each.key}"
 }
 
 module "iam_policies" {   # policy module for ec2 iam role
