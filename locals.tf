@@ -38,14 +38,10 @@ locals {
       EOL
 
 
-      
       # restarts cloudwatch agent using new config
 
       /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -a fetch-config -m ec2 -c file:/opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json -s
 
-      
-      
-      
       
       # updates and upgrades instance
       
@@ -55,7 +51,6 @@ locals {
       sed -i "s/#\$nrconf{kernelhints} = -1;/\$nrconf{kernelhints} = -1;/g" /etc/needrestart/needrestart.conf
       
 
-      
       # install nginx
 
       sudo apt install nginx -y
@@ -63,14 +58,13 @@ locals {
       sudo sed -i -e 's/<h1>Welcome to nginx!/<h1>target/g' /var/www/html/index.nginx-debian.html
     EOF
     
+    
+    
     monitor = <<-EOF
       # restarts cloudwatch agent using new config
 
       /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -a fetch-config -m ec2 -c file:/opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json -s
 
-      
-      
-      
       
       # updates and upgrades instance
       
@@ -80,12 +74,61 @@ locals {
       sed -i "s/#\$nrconf{kernelhints} = -1;/\$nrconf{kernelhints} = -1;/g" /etc/needrestart/needrestart.conf
       
 
-      
       # install nginx
 
       sudo apt install nginx -y
       #nginx -t
       sudo sed -i -e 's/<h1>Welcome to nginx!/<h1>monitor/g' /var/www/html/index.nginx-debian.html
+
+      
+      # install git
+
+      sudo apt install -y git
+      
+
+      # clone app repo from specified branch
+
+      sudo git clone --branch ${var.branch} ${var.app-repo} /var/www/monitorapp
+
+
+      # set directory permissions
+
+      sudo chown -R www-data:www-data /var/www/monitorapp
+      sudo chown -R 755 /var/www/monitorapp
+
+
+      # configure nginx
+
+      NGINX_CONFIG ="/etc/nginx/sites-available/monitorapp"
+      sudo $NGINX_CONFIG > /dev/null <<EOL
+      server {
+        listen 80;
+        server_name _;
+
+        root /var/www/monitorapp;
+        index index.html index.htm;
+
+        location / {
+          try_files $uri $uri/ =404;
+        }
+      }
+      EOL
+      sudo ln -s $NGINX_CONFIG /etc/nginx/sites-enabled/
+
+
+      # test nginx config
+
+      sudo nginx -t
+
+
+      # reload nginx 
+
+      sudo systemctl reload nginx
+
+      
+      # remove default nginx config to avoid conflicts
+
+      sudo rm /etc/nginx/sites-enabled/default
     EOF
   }
 }

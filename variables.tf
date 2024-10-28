@@ -11,4 +11,12 @@ variable "instance_type" {
   type =string
 }
 
+variable "branch" {
+  default = "dev"
+}
+
+variable "app-repo" {
+  default = "https://github.com/BenjaminS04/epa-project-app.git"
+}
+
 
