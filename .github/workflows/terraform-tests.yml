@@ -35,15 +35,21 @@ jobs:
       - name: Terraform Validate
         run: terraform validate
 
-      # Step 3: Lint Terraform code
-      - name: Run tflint
-        uses: terraform-linters/tflint-action@v0.22.0
+      # Step 3: install tflint
+      - name: Install tflint
+        run: | 
+            curl -s 
+            https://raw.githubusercontent.com/terraform-linters/tflint/master/install_linux.sh | bash
 
-    #   # Step 4: Run tfsec for security checks
+      # Step 4: Lint Terraform code
+      - name: Run tflint
+        uses: tflint
+
+    #   # Step 5: Run tfsec for security checks
     #   - name: Run tfsec for security
     #     uses: aquasecurity/tfsec-action@v1.0.4
 
-      # Step 5: Terraform Plan (dry run)
+      # Step 6: Terraform Plan (dry run)
       - name: Terraform Plan
         run: terraform plan
 
