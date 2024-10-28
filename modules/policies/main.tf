@@ -69,7 +69,7 @@ resource "aws_iam_role" "target_ec2_service_role" {
 }
 
 # Attach S3 Policy to the Role for target instance
-resource "aws_iam_role_policy_attachment" "user_policy_attachment" {
+resource "aws_iam_role_policy_attachment" "target_user_policy_attachment" {
   role       = aws_iam_role.target_ec2_service_role.name
   policy_arn = aws_iam_policy.user_s3_policy.arn
 }
@@ -129,7 +129,7 @@ resource "aws_iam_role" "monitor_ec2_service_role" {
 }
 
 # Attach S3 Policy to the Role for monitor instance
-resource "aws_iam_role_policy_attachment" "user_policy_attachment" {
+resource "aws_iam_role_policy_attachment" "monitor_user_policy_attachment" {
   role       = aws_iam_role.monitor_ec2_service_role.name
   policy_arn = aws_iam_policy.user_s3_policy.arn
 }
