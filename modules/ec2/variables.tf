@@ -37,3 +37,8 @@ variable "iam_instance_profile" {
 variable "additional_user_data" {
   description = "aditional user data to append to user data script"
 }
+
+variable "each_key" {
+  type = string
+  description = "locals key for each instance"
+}
