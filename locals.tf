@@ -62,6 +62,7 @@ locals {
       #nginx -t
       sudo sed -i -e 's/<h1>Welcome to nginx!/<h1>target/g' /var/www/html/index.nginx-debian.html
     EOF
+    
     monitor = <<-EOF
       # restarts cloudwatch agent using new config
 
