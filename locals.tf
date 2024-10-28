@@ -88,7 +88,7 @@ locals {
 
       # clone app repo from specified branch
 
-      sudo git clone --branch ${var.branch} ${var.app-repo} /var/www/monitorapp
+      sudo git clone --branch ${var.app-branch} ${var.app-repo} /var/www/monitorapp
 
 
       # set directory permissions

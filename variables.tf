@@ -11,7 +11,7 @@ variable "instance_type" {
   type =string
 }
 
-variable "branch" {
+variable "app-branch" {
   default = "dev"
 }
 

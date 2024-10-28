@@ -99,6 +99,7 @@ resource "aws_iam_policy" "monitor_cloudwatch_agent_policy" {
       {
         Action = [
           "cloudwatch:GetMetricData",
+          "cloudwatch:ListMetricData",
           "logs:GetLogEvents",
           "logs:DescribeLogStreams"
         ],
