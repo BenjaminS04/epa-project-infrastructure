@@ -38,8 +38,7 @@ jobs:
       # Step 3: install tflint
       - name: Install tflint
         run: | 
-            curl -s 
-            https://raw.githubusercontent.com/terraform-linters/tflint/master/install_linux.sh | bash
+            curl -s https://raw.githubusercontent.com/terraform-linters/tflint/master/install_linux.sh | bash
 
       # Step 4: Lint Terraform code
       - name: Run tflint
