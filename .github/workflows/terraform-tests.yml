@@ -43,7 +43,7 @@ jobs:
 
       # Step 4: Lint Terraform code
       - name: Run tflint
-        uses: tflint
+        run: tflint
 
     #   # Step 5: Run tfsec for security checks
     #   - name: Run tfsec for security
