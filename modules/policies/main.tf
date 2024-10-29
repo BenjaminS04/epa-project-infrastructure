@@ -51,7 +51,7 @@ resource "aws_iam_policy" "target_cloudwatch_agent_policy" {
 
 # IAM Role for EC2 for target instance
 resource "aws_iam_role" "target_ec2_service_role" {
-  name = "monitor_EC2ServiceRole"
+  name = "target_EC2ServiceRole"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17",

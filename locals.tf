@@ -2,6 +2,7 @@
 locals {
   instances = {
     target = <<-EOF
+    
       # creates cloudwatch config file for sending logs to cloudwatch
 
       cat > /opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json <<'EOL'
@@ -38,10 +39,12 @@ locals {
       EOL
 
 
+      
       # restarts cloudwatch agent using new config
 
       /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -a fetch-config -m ec2 -c file:/opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json -s
 
+      
       
       # updates and upgrades instance
       
@@ -51,6 +54,7 @@ locals {
       sed -i "s/#\$nrconf{kernelhints} = -1;/\$nrconf{kernelhints} = -1;/g" /etc/needrestart/needrestart.conf
       
 
+      
       # install nginx
 
       sudo apt install nginx -y
@@ -60,11 +64,16 @@ locals {
     
     
     
+    
+    
+    
     monitor = <<-EOF
+
       # restarts cloudwatch agent using new config
 
       /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -a fetch-config -m ec2 -c file:/opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json -s
 
+      
       
       # updates and upgrades instance
       
@@ -74,6 +83,7 @@ locals {
       sed -i "s/#\$nrconf{kernelhints} = -1;/\$nrconf{kernelhints} = -1;/g" /etc/needrestart/needrestart.conf
       
 
+      
       # install nginx
 
       sudo apt install nginx -y
@@ -81,22 +91,26 @@ locals {
       sudo sed -i -e 's/<h1>Welcome to nginx!/<h1>monitor/g' /var/www/html/index.nginx-debian.html
 
       
+      
       # install git
 
       sudo apt install -y git
       
 
+      
       # clone app repo from specified branch
 
       sudo git clone --branch ${var.app-branch} ${var.app-repo} /var/www/monitorapp
 
 
+      
       # set directory permissions
 
       sudo chown -R www-data:www-data /var/www/monitorapp
       sudo chown -R 755 /var/www/monitorapp
 
 
+      
       # configure nginx
 
       NGINX_CONFIG ="/etc/nginx/sites-available/monitorapp"
@@ -116,19 +130,23 @@ locals {
       sudo ln -s $NGINX_CONFIG /etc/nginx/sites-enabled/
 
 
+      
+      # remove default nginx config to avoid conflicts
+
+      sudo rm /etc/nginx/sites-enabled/default
+
+
+      
       # test nginx config
 
       sudo nginx -t
 
 
+      
       # reload nginx 
 
       sudo systemctl reload nginx
 
-      
-      # remove default nginx config to avoid conflicts
-
-      sudo rm /etc/nginx/sites-enabled/default
-    EOF
+      EOF
   }
 }
