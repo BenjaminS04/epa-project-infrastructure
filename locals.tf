@@ -76,75 +76,83 @@ locals {
       
       
       # updates and upgrades instance
-      
+
       sudo apt update
-      sudo apt upgrade -y && sudo apt install -y
+      sudo apt upgrade -y
+
       sed -i 's/#$nrconf{restart} = '"'"'i'"'"';/$nrconf{restart} = '"'"'a'"'"';/g' /etc/needrestart/needrestart.conf
       sed -i "s/#\$nrconf{kernelhints} = -1;/\$nrconf{kernelhints} = -1;/g" /etc/needrestart/needrestart.conf
-      
 
+      
       
       # install nginx
 
       sudo apt install nginx -y
-      #nginx -t
-      sudo sed -i -e 's/<h1>Welcome to nginx!/<h1>monitor/g' /var/www/html/index.nginx-debian.html
 
       
       
       # install git
-
-      sudo apt install -y git
       
+      sudo apt install -y git
 
+      
       
       # clone app repo from specified branch
-
+      
       sudo git clone --branch ${var.app-branch} ${var.app-repo} /var/www/monitorapp
 
-
+      
       
       # set directory permissions
-
+      
       sudo chown -R www-data:www-data /var/www/monitorapp
-      sudo chown -R 755 /var/www/monitorapp
-
+      sudo chmod -R 755 /var/www/monitorapp
 
       
+      
       # configure nginx
-
-      NGINX_CONFIG ="/etc/nginx/sites-available/monitorapp"
-      sudo $NGINX_CONFIG > /dev/null <<EOL
+      
+      NGINX_CONFIG="/etc/nginx/sites-available/monitorapp"
+      cat << 'EOL' | sudo tee $NGINX_CONFIG > /dev/null
       server {
-        listen 80;
-        server_name _;
+          listen 80;
+          server_name _;
 
-        root /var/www/monitorapp;
-        index index.html index.htm;
+           root /var/www/monitorapp;
+          index html/index.html;
 
-        location / {
-          try_files $uri $uri/ =404;
-        }
+          location / {
+              try_files $uri $uri/ /html/index.html;
+          }
+
+          location /css/ {
+              alias /var/www/monitorapp/css/;
+          }
+
+          location /js/ {
+              alias /var/www/monitorapp/js/;
+
+          
       }
       EOL
       sudo ln -s $NGINX_CONFIG /etc/nginx/sites-enabled/
 
-
+      
       
       # remove default nginx config to avoid conflicts
-
+      
       sudo rm /etc/nginx/sites-enabled/default
 
-
+      
       
       # test nginx config
-
+      
       sudo nginx -t
 
-
+      
       
       # reload nginx 
-
+      
       sudo systemctl reload nginx
 
       EOF
