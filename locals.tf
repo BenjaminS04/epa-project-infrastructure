@@ -115,24 +115,23 @@ locals {
       NGINX_CONFIG="/etc/nginx/sites-available/monitorapp"
       cat << 'EOL' | sudo tee $NGINX_CONFIG > /dev/null
       server {
-          listen 80;
-          server_name _;
+        listen 80;
+        server_name _;
 
-           root /var/www/monitorapp;
-          index html/index.html;
+          root /var/www/monitorapp;
+        index html/index.html;
 
-          location / {
-              try_files $uri $uri/ /html/index.html;
-          }
+        location / {
+            try_files $uri $uri/ /html/index.html;
+        }
 
-          location /css/ {
-              alias /var/www/monitorapp/css/;
-          }
+        location /css/ {
+            alias /var/www/monitorapp/css/;
+        }
 
-          location /js/ {
-              alias /var/www/monitorapp/js/;
-
-          
+        location /js/ {
+            alias /var/www/monitorapp/js/;
+        }
       }
       EOL
       sudo ln -s $NGINX_CONFIG /etc/nginx/sites-enabled/
