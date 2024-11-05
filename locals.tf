@@ -118,7 +118,7 @@ locals {
         listen 80;
         server_name _;
 
-          root /var/www/monitorapp;
+        root /var/www/monitorapp;
         index html/index.html;
 
         location / {
