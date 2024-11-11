@@ -35,7 +35,7 @@ resource "aws_instance" "ec2" {
     # names instance
     Name = "${var.instance_name}"
     
-    # makes only the instance for the monitor app is recreated, so its user data is rerun
+    # makes only the instance for the monitor app is recreated, so its user data is rerun (is not working as expected needs future fix)
     recreate_trigger = var.each_key == "monitor" ? timestamp() : "no recreate"  
   }
 }

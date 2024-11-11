@@ -96,12 +96,29 @@ locals {
       sudo apt install -y git
 
       
+
+      # install node
+
+      sudo apt-get install -y nodejs npm
+
+      
       
       # clone app repo from specified branch
       
       sudo git clone --branch ${var.app-branch} ${var.app-repo} /var/www/monitorapp
 
-      
+
+
+      # create server js folder and move server js file from static files location
+
+      sudo mkdir ~/ec2-metrics-app-servjs
+      sudo cd ~/ec2-metrics-app-servjs
+      sudo npm init -y
+      sudo npm install express aws-sdk body-parser
+      sudo mv /var/www/monitorapp/server.js ~/ec2-metrics-app-servjs
+
+
+
       
       # set directory permissions
       
@@ -131,6 +148,16 @@ locals {
 
         location /js/ {
             alias /var/www/monitorapp/js/;
+        }
+
+        #proxy api requests to node server
+        location /api/ {
+          proxy_pass http://localhost:3000;
+          proxy_http_version 1.1;
+          proxy_set_header Upgrade $http_upgrade;
+          proxy_set_header Connection 'upgrade';
+          proxy_set_header Host '$host;
+          proxy_cache_bypass $http_upgrade;
         }
       }
       EOL
