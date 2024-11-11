@@ -118,7 +118,6 @@ locals {
       sudo mv /var/www/monitorapp/server.js ~/ec2-metrics-app-servjs
 
 
-
       
       # set directory permissions
       
@@ -161,7 +160,14 @@ locals {
         }
       }
       EOL
+
       sudo ln -s $NGINX_CONFIG /etc/nginx/sites-enabled/
+
+
+
+      # verifies node server running
+
+      node server.js
 
       
       
