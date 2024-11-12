@@ -94,17 +94,18 @@ locals {
       # install git
       
       sudo apt install -y git
-
       
-      # install express
-
-      sudo npm install express
-
-
+      
       
       # install node
 
       sudo apt-get install -y nodejs npm
+
+
+      
+      # install express
+
+      sudo npm install -g express
 
       
       
