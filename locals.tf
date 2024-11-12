@@ -103,12 +103,6 @@ locals {
 
 
       
-      # install express
-
-      sudo npm install -g express
-
-      
-      
       # clone app repo from specified branch
       
       sudo git clone --branch ${var.app-branch} ${var.app-repo} /var/www/monitorapp
@@ -124,6 +118,14 @@ locals {
       sudo mv /var/www/monitorapp/server.js ~/ec2-metrics-app-servjs
 
 
+      # install express
+
+      sudo cd ~/ec2-metrics-app-servjs
+      sudo npm init
+      sudo npm install express
+      sudo cd ~
+
+      
       
       # set directory permissions
       
@@ -173,7 +175,7 @@ locals {
 
       # verifies node server running
 
-      node server.js
+      sudo node ~/ec2-metrics-app-servjs
 
       
       
