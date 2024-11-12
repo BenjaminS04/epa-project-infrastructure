@@ -101,6 +101,12 @@ locals {
 
       sudo apt-get install -y nodejs npm
 
+
+
+      # install express
+
+      sudo npm install express
+
       
       
       # clone app repo from specified branch
