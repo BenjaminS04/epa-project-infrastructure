@@ -111,19 +111,10 @@ locals {
 
       # create server js folder and move server js file from static files location
 
-      sudo mkdir ~/ec2-metrics-app-servjs
-      sudo cd ~/ec2-metrics-app-servjs
+      cd /var/www/monitorapp
       sudo npm init -y
       sudo npm install express aws-sdk body-parser
-      sudo mv /var/www/monitorapp/server.js ~/ec2-metrics-app-servjs
-
-
-      # install express
-
-      sudo cd ~/ec2-metrics-app-servjs
-      sudo npm init
-      sudo npm install express
-      sudo cd ~
+      cd ~
 
       
       
@@ -175,7 +166,7 @@ locals {
 
       # verifies node server running
 
-      sudo node ~/ec2-metrics-app-servjs
+      sudo node /var/www/monitorapp/server.js
 
       
       
