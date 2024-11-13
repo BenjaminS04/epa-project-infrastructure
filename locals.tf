@@ -162,12 +162,6 @@ locals {
 
       sudo ln -s $NGINX_CONFIG /etc/nginx/sites-enabled/
 
-
-
-      # verifies node server running
-
-      sudo node /var/www/monitorapp/server.js
-
       
       
       # remove default nginx config to avoid conflicts
@@ -185,6 +179,12 @@ locals {
       # reload nginx 
       
       sudo systemctl reload nginx
+      
+
+
+      # starts node server
+
+      sudo node /var/www/monitorapp/server.js
 
       EOF
   }
