@@ -2,7 +2,7 @@ name: Terraform Tests
 
 on:
   push:
-    branches: [!"dev" ]
+    branches: ["test", "main"]
   
   pull_request:
     
