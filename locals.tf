@@ -69,7 +69,7 @@ locals {
     
     monitor = <<-EOF
 
-      #${timestamp()}
+      # ${timestamp()}  - causes unique user data every apply meaning this ec2 to be remade if user_data_replace_on_change is true
 
       # restarts cloudwatch agent using new config
 

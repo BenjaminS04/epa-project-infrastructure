@@ -22,6 +22,7 @@ resource "aws_instance" "ec2" {
     EOF
 
   
+  # forces instance to be remade if its user data changes
   user_data_replace_on_change = true
 
   
