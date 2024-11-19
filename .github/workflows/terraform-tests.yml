@@ -2,11 +2,11 @@ name: Terraform Tests
 
 on:
   push:
-    branches:
-      - test
+    branches: ["test", "main"]
+  
   pull_request:
-    branches:
-      - test
+    
+      
 
 jobs:
   terraform:

@@ -69,6 +69,10 @@ locals {
     
     monitor = <<-EOF
 
+      # ${timestamp()}  - causes unique user data every apply meaning this ec2 to be remade if user_data_replace_on_change is true
+
+      
+      
       # restarts cloudwatch agent using new config
 
       /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -a fetch-config -m ec2 -c file:/opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json -s
@@ -94,12 +98,27 @@ locals {
       # install git
       
       sudo apt install -y git
-
       
+      
+      
+      # install node
+
+      sudo apt-get install -y nodejs npm
+
+
       
       # clone app repo from specified branch
       
       sudo git clone --branch ${var.app-branch} ${var.app-repo} /var/www/monitorapp
+
+
+
+      # create server js folder and move server js file from static files location
+
+      cd /var/www/monitorapp
+      sudo npm init -y
+      sudo npm install express aws-sdk body-parser
+      cd ~
 
       
       
@@ -115,26 +134,36 @@ locals {
       NGINX_CONFIG="/etc/nginx/sites-available/monitorapp"
       cat << 'EOL' | sudo tee $NGINX_CONFIG > /dev/null
       server {
-          listen 80;
-          server_name _;
+        listen 80;
+        server_name _;
 
-           root /var/www/monitorapp;
-          index html/index.html;
+        root /var/www/monitorapp;
+        index html/index.html;
 
-          location / {
-              try_files $uri $uri/ /html/index.html;
-          }
+        location / {
+            try_files $uri $uri/ /html/index.html;
+        }
 
-          location /css/ {
-              alias /var/www/monitorapp/css/;
-          }
+        location /css/ {
+            alias /var/www/monitorapp/css/;
+        }
 
-          location /js/ {
-              alias /var/www/monitorapp/js/;
+        location /js/ {
+            alias /var/www/monitorapp/js/;
+        }
 
-          
+        #proxy api requests to node server
+        location /api/ {
+          proxy_pass http://localhost:3000;
+          proxy_http_version 1.1;
+          proxy_set_header Upgrade $http_upgrade;
+          proxy_set_header Connection 'upgrade';
+          proxy_set_header Host $host;
+          proxy_cache_bypass $http_upgrade;
+        }
       }
       EOL
+
       sudo ln -s $NGINX_CONFIG /etc/nginx/sites-enabled/
 
       
@@ -154,6 +183,12 @@ locals {
       # reload nginx 
       
       sudo systemctl reload nginx
+      
+
+
+      # starts node server
+
+      sudo node /var/www/monitorapp/server.js
 
       EOF
   }

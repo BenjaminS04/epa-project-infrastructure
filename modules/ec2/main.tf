@@ -4,7 +4,7 @@ resource "aws_instance" "ec2" {
   instance_type        = var.instance_type
   key_name             = var.key_name
   iam_instance_profile = "${var.each_key}-EC2InstanceProfile"
-   #user data used to run script upon ec2 initialisation
+  
 
   user_data = <<-EOF
     #!/bin/bash
@@ -20,6 +20,11 @@ resource "aws_instance" "ec2" {
 
     ${var.additional_user_data} 
     EOF
+
+  
+  # forces instance to be remade if its user data changes
+  user_data_replace_on_change = true
+
   
   lifecycle {
     # makes sure old resource stays live until new one is created to minimize down time
@@ -34,8 +39,5 @@ resource "aws_instance" "ec2" {
   tags = {
     # names instance
     Name = "${var.instance_name}"
-    
-    # makes only the instance for the monitor app is recreated, so its user data is rerun
-    recreate_trigger = var.each_key == "monitor" ? timestamp() : "no recreate"  
   }
 }
