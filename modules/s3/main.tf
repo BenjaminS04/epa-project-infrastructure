@@ -28,3 +28,16 @@ resource "aws_s3_bucket_public_access_block" "private" {
   # Restricts public bucket policies from allowing cross-account access unless explicitly authorized.
   restrict_public_buckets = true  
 }
+
+# versioning for s3 buckets, means changes are reversable.
+resource "aws_s3_bucket_versioning" "s3_versioning" {
+  bucket = aws_s3_bucket.bucket.id
+
+  versioning_configuration {
+    status = "Enabled"
+
+    # prevents deletion without using mfa (multi-factor authenication)
+    mfa_delete = "Enabled"
+  }
+  
+}
