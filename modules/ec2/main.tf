@@ -3,83 +3,39 @@ resource "aws_instance" "ec2" {
   ami                  = var.ami
   instance_type        = var.instance_type
   key_name             = var.key_name
-  iam_instance_profile = "EC2InstanceProfile"
-   #user data used to run script upon ec2 initialisation
+  iam_instance_profile = "${var.each_key}-EC2InstanceProfile"
+  metadata_options {
+    http_tokens = "required"
+  }
+  root_block_device {
+    encrypted = "true"
+  }
 
   user_data = <<-EOF
-              #!/bin/bash
+    #!/bin/bash
 
-              
-              # gets cloudwatch logging dependancies
+    
+    # gets cloudwatch logging dependancies
 
-              wget https://s3.amazonaws.com/amazoncloudwatch-agent/ubuntu/amd64/latest/amazon-cloudwatch-agent.deb
-              dpkg -i -E ./amazon-cloudwatch-agent.deb
-              
-              
-              
-              
-              # creates cloudwatch config file for sending logs to cloudwatch
+    wget https://s3.amazonaws.com/amazoncloudwatch-agent/ubuntu/amd64/latest/amazon-cloudwatch-agent.deb
+    dpkg -i -E ./amazon-cloudwatch-agent.deb
+    
+    
+    # unique instance user data
 
-              cat > /opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json <<'EOL'
-              {
-                "agent": {
-                  "metrics_collection_interval": 60,
-                  "logfile": "/opt/aws/amazon-cloudwatch-agent/logs/amazon-cloudwatch-agent.log"
-                },
-                "logs": {
-                  "logs_collected": {
-                    "files": {
-                      "collect_list": [
-                        {
-                          "file_path": "/var/log/syslog",
-                          "log_group_name": "syslog",
-                          "log_stream_name": "{instance_id}-syslog"
-                        },
-                        {
-                          "file_path": "/var/log/auth.log",
-                          "log_group_name": "auth-log",
-                          "log_stream_name": "{instance_id}-auth"
-                        },
-                        {
-                          "file_path": "/var/log/cloud-init-output.log",
-                          "log_group_name": "cloud-init-output",
-                          "log_stream_name": "{instance_id}-cloud-init-output",
-                          "timestamp_format": "%b %d %H:%M:%S"
-                        }
-                      ]
-                    }
-                  }
-                }
-              }
-              EOL
+    ${var.additional_user_data} 
+    EOF
 
-
-              
-              # restarts cloudwatch agent using new config
-
-              /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -a fetch-config -m ec2 -c file:/opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json -s
-
-              
-              
-              
-              
-              # updates and upgrades instance
-              
-              sudo apt update
-              sudo apt upgrade -y && sudo apt install -y
-              sed -i 's/#$nrconf{restart} = '"'"'i'"'"';/$nrconf{restart} = '"'"'a'"'"';/g' /etc/needrestart/needrestart.conf
-              sed -i "s/#\$nrconf{kernelhints} = -1;/\$nrconf{kernelhints} = -1;/g" /etc/needrestart/needrestart.conf
-              
-
-              
-              # install nginx
-
-              sudo apt install nginx -y
-              #nginx -t
-
-              ${var.additional_user_data}
-              EOF
   
+  # forces instance to be remade if its user data changes
+  user_data_replace_on_change = true
+
+  
+  lifecycle {
+    # makes sure old resource stays live until new one is created to minimize down time
+    create_before_destroy = true
+  }
+
 
   # adds security group and subnet
   vpc_security_group_ids = [var.security_group_id]

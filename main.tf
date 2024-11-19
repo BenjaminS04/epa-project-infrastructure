@@ -1,6 +1,16 @@
+terraform  { #sets required providers and versions
+  required_version = "1.8.5"
+  
+  required_providers {
+    aws ={
+      source = "hashicorp/aws"
+      version = "5.72.1"
+    }
+  }
+}
+
 provider "aws" {
   region = var.region # Update with your desired AWS region
-  
 }
 
 module "vpc" {   # vpc for resouces
@@ -36,8 +46,9 @@ module "ec2" {   # ec2 module
   subnet_id          = module.vpc.subnet_id
   instance_name      = "${each.key}-test-instance" 
   bucket_name        = module.s3_bucket.bucket_name
-  iam_instance_profile= module.iam_policies.iam_instance_profile
+  iam_instance_profile= "${each.key}-EC2InstanceProfile"
   additional_user_data = each.value
+  each_key= each.key
 }
 
 module "iam_policies" {   # policy module for ec2 iam role

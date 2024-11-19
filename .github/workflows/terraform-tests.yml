@@ -1,0 +1,82 @@
+name: Terraform Tests
+
+on:
+  push:
+    branches: ["test", "main"]
+  
+  pull_request:
+    
+      
+
+jobs:
+  terraform:
+    name: Terraform Testing
+    runs-on: ubuntu-latest
+
+    env:
+      TF_VAR_region: ${{ secrets.AWS_REGION }}
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_version: 1.8.5
+
+      # Step 1: Initialize Terraform
+      - name: Terraform Init
+        run: terraform init
+
+      # Step 2: Validate Terraform syntax
+      - name: Terraform Validate
+        run: terraform validate
+
+      # Step 3: install tflint
+      - name: Install tflint
+        run: | 
+            curl -s https://raw.githubusercontent.com/terraform-linters/tflint/master/install_linux.sh | bash
+
+      # Step 4: Lint Terraform code
+      - name: Run tflint
+        run: tflint
+
+    #   # Step 5: Run tfsec for security checks
+    #   - name: Run tfsec for security
+    #     uses: aquasecurity/tfsec-action@v1.0.4
+
+      # Step 6: Terraform Plan (dry run)
+      - name: Terraform Plan
+        run: terraform plan
+
+#   # Terratest job (optional, requires Go)
+#   terratest:
+#     name: Terratest
+#     runs-on: ubuntu-latest
+#     needs: terraform  # Runs after the terraform job
+
+    # env:
+    #   AWS_REGION: us-east-1
+    #   TF_VAR_region: ${{ secrets.AWS_REGION }}
+    #   AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+    #   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+    # steps:
+    #   - name: Checkout code
+    #     uses: actions/checkout@v2
+
+    #   - name: Set up Go
+    #     uses: actions/setup-go@v2
+    #     with:
+    #       go-version: '1.16'
+
+    #   # Install Terratest dependencies
+    #   - name: Install dependencies
+    #     run: go mod tidy
+
+    #   # Run Terratest
+    #   - name: Run Terratest
+    #     run: go test -v -timeout 30m ./test
