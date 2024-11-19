@@ -61,12 +61,12 @@ locals {
       #nginx -t
       sudo sed -i -e 's/<h1>Welcome to nginx!/<h1>target/g' /var/www/html/index.nginx-debian.html
     EOF
-    
-    
-    
-    
-    
-    
+
+
+
+
+
+
     monitor = <<-EOF
 
       # ${timestamp()}  - causes unique user data every apply meaning this ec2 to be remade if user_data_replace_on_change is true

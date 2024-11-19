@@ -1,20 +1,20 @@
 # User S3 Policy
 resource "aws_iam_policy" "user_s3_policy" {
-  name   = "UserS3AccessPolicy"
+  name = "UserS3AccessPolicy"
   policy = jsonencode({
     Version = "2012-10-17",
     Statement = [
       {
-        Effect   = "Allow",
-        Action   = [
+        Effect = "Allow",
+        Action = [
           "s3:ListBucket",
           "s3:GetBucketLocation"
         ],
         Resource = "arn:aws:s3:::${var.bucket_name}"
       },
       {
-        Effect   = "Allow",
-        Action   = [
+        Effect = "Allow",
+        Action = [
           "s3:GetObject",
           "s3:PutObject",
           "s3:DeleteObject"
@@ -42,7 +42,7 @@ resource "aws_iam_policy" "target_cloudwatch_agent_policy" {
           "logs:PutLogEvents",
           "logs:DescribeLogStreams"
         ],
-        Effect = "Allow",
+        Effect   = "Allow",
         Resource = "*"
       },
     ]
@@ -103,7 +103,7 @@ resource "aws_iam_policy" "monitor_cloudwatch_agent_policy" {
           "logs:GetLogEvents",
           "logs:DescribeLogStreams"
         ],
-        Effect = "Allow",
+        Effect   = "Allow",
         Resource = "*"
       },
     ]

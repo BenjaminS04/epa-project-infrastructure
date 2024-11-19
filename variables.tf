@@ -8,17 +8,17 @@ variable "ami" {
 }
 variable "instance_type" {
   default = "t2.micro"
-  type =string
+  type    = string
 }
 
 variable "app-branch" {
   default = "dev"
-  type = string
+  type    = string
 }
 
 variable "app-repo" {
   default = "https://github.com/BenjaminS04/epa-project-app.git"
-  type = string
+  type    = string
 }
 
 
