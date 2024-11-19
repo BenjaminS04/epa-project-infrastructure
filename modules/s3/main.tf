@@ -34,10 +34,10 @@ resource "aws_s3_bucket_versioning" "s3_versioning" {
   bucket = aws_s3_bucket.bucket.id
 
   versioning_configuration {
-    status = "enabled"
+    status = "Enabled"
 
     # prevents deletion without using mfa (multi-factor authenication)
-    mfa_delete = "enabled"
+    mfa_delete = "Enabled"
   }
   
 }
