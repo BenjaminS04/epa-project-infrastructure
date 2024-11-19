@@ -63,6 +63,7 @@ jobs:
         # Runs Snyk Infrastructure as Code (IaC) analysis and uploads result to Snyk.
         # Use || true to not fail the pipeline.
       - name: Snyk IaC test and report
+        continue-on-error: true
         run: snyk iac test -d --sarif-file-output=snyk-iac.sarif || true
 
       #   # Build the docker image for testing
