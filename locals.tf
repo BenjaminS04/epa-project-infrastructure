@@ -127,6 +127,16 @@ locals {
       sudo chown -R www-data:www-data /var/www/monitorapp
       sudo chmod -R 755 /var/www/monitorapp
 
+
+
+      # creates ssl self signed key and certificate
+
+      PUBLIC_IP=$(curl -s http://169.254.169.254/latest/meta-data/public-ipv4)
+      sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
+        -keyout /etc/ssl/private/selfsigned.key \
+        -out /etc/ssl/certs/selfsigned.crt \
+        -subj "/C=GB/ST=England/L=Manchester/O=bens EPA/CN=$PUBLIC_IP"
+
       
       
       # configure nginx
@@ -134,11 +144,28 @@ locals {
       NGINX_CONFIG="/etc/nginx/sites-available/monitorapp"
       cat << 'EOL' | sudo tee $NGINX_CONFIG > /dev/null
       server {
-        listen 80;
+        # listens on port 443/https
+
+        listen 443 ssl;
         server_name _;
+
+
+        # sets up ssl for encrypted https connection
+
+        ssl_certificate /etc/ssl/certs/selfsigned.crt;
+        ssl_certificate_key /etc/ssl/private/selfsigned.key;
+
+        ssl_protocols TLSv1.2 TLSv1.3;
+        ssl_ciphers HIGH:!aNULL:!MD5;
+
+
+        # sets web page root
 
         root /var/www/monitorapp;
         index html/index.html;
+
+
+        # sets file locations for nginx
 
         location / {
             try_files $uri $uri/ /html/index.html;
@@ -152,7 +179,9 @@ locals {
             alias /var/www/monitorapp/js/;
         }
 
+
         #proxy api requests to node server
+
         location /api/ {
           proxy_pass http://localhost:3000;
           proxy_http_version 1.1;
