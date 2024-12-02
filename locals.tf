@@ -126,7 +126,7 @@ locals {
       
       sudo chown -R www-data:www-data /var/www/monitorapp
       sudo chmod -R 755 /var/www/monitorapp
-
+      
 
 
       # creates ssl self signed key and certificate
@@ -157,6 +157,7 @@ locals {
         index index.html;
 
         location / {
+            autoindex on; 
             try_files $uri $uri/ /index.html;
         }
 
