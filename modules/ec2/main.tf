@@ -24,6 +24,10 @@ resource "aws_instance" "ec2" {
     # unique instance user data
 
     ${var.additional_user_data} 
+
+    # notifies all logged in users on linux
+    wall -n "user data complete"
+
     EOF
 
 
