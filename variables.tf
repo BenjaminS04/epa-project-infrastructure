@@ -12,7 +12,7 @@ variable "instance_type" {
 }
 
 variable "app-branch" {
-  default = "dev"
+  default = "feat/logs"//"dev"
   type    = string
 }
 

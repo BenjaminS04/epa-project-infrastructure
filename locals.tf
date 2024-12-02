@@ -171,6 +171,14 @@ locals {
             try_files $uri $uri/ /html/index.html;
         }
 
+        location / {
+            try_files $uri $uri/ /html/logs-page.html;
+        }
+        
+        location /html {
+            alias /var/www/monitorapp/html/;
+        }
+
         location /css/ {
             alias /var/www/monitorapp/css/;
         }
