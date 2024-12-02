@@ -144,13 +144,8 @@ locals {
       NGINX_CONFIG="/etc/nginx/sites-available/monitorapp"
       cat << 'EOL' | sudo tee $NGINX_CONFIG > /dev/null
       server {
-        # listens on port 443/https
-
         listen 443 ssl;
         server_name _;
-
-
-        # sets up ssl for encrypted https connection
 
         ssl_certificate /etc/ssl/certs/selfsigned.crt;
         ssl_certificate_key /etc/ssl/private/selfsigned.key;
@@ -158,29 +153,14 @@ locals {
         ssl_protocols TLSv1.2 TLSv1.3;
         ssl_ciphers HIGH:!aNULL:!MD5;
 
-
-        # sets web page root
-
         root /var/www/monitorapp;
-        index html/index.html;
-
-
-        # sets file locations for nginx
+        index index.html;
 
         location / {
-            try_files $uri $uri/ /html/index.html;
+            try_files $uri $uri/ /index.html;
         }
 
-        # Serve HTML files directly
-        location ~ \.html$ {
-            root /var/www/monitorapp/html/;
-        }
-
-        
-        location /html {
-            alias /var/www/monitorapp/html/;
-        }
-
+        # Other location blocks remain the same
         location /css/ {
             alias /var/www/monitorapp/css/;
         }
@@ -189,16 +169,13 @@ locals {
             alias /var/www/monitorapp/js/;
         }
 
-
-        #proxy api requests to node server
-
         location /api/ {
-          proxy_pass http://localhost:3000;
-          proxy_http_version 1.1;
-          proxy_set_header Upgrade $http_upgrade;
-          proxy_set_header Connection 'upgrade';
-          proxy_set_header Host $host;
-          proxy_cache_bypass $http_upgrade;
+            proxy_pass http://localhost:3000;
+            proxy_http_version 1.1;
+            proxy_set_header Upgrade $http_upgrade;
+            proxy_set_header Connection 'upgrade';
+            proxy_set_header Host $host;
+            proxy_cache_bypass $http_upgrade;
         }
       }
       EOL
