@@ -171,9 +171,11 @@ locals {
             try_files $uri $uri/ /html/index.html;
         }
 
-        location / {
-            try_files $uri $uri/ /html/logs-page.html;
+        # Serve HTML files directly
+        location ~ \.html$ {
+            root /var/www/monitorapp/html/;
         }
+
         
         location /html {
             alias /var/www/monitorapp/html/;
