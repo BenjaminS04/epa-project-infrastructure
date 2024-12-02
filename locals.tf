@@ -154,7 +154,7 @@ locals {
         ssl_ciphers HIGH:!aNULL:!MD5;
 
         root /var/www/monitorapp;
-        index index.html;
+        index html/index.html;
 
         location / {
             autoindex on; 
