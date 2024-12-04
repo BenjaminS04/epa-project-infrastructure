@@ -18,17 +18,17 @@ locals {
                 {
                   "file_path": "/var/log/syslog",
                   "log_group_name": "syslog",
-                  "log_stream_name": "{instance_id}-syslog"
+                  "log_stream_name": "{instance_id}"
                 },
                 {
                   "file_path": "/var/log/auth.log",
                   "log_group_name": "auth-log",
-                  "log_stream_name": "{instance_id}-auth"
+                  "log_stream_name": "{instance_id}"
                 },
                 {
                   "file_path": "/var/log/cloud-init-output.log",
                   "log_group_name": "cloud-init-output",
-                  "log_stream_name": "{instance_id}-cloud-init-output",
+                  "log_stream_name": "{instance_id}",
                   "timestamp_format": "%b %d %H:%M:%S"
                 }
               ]
