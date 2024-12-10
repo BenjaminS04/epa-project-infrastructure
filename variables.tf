@@ -12,13 +12,19 @@ variable "instance_type" {
 }
 
 variable "app-branch" {
-  default = "feat/logs"//"dev"
+  default = "feat/logs" //"dev"
   type    = string
 }
 
 variable "app-repo" {
   default = "https://github.com/BenjaminS04/epa-project-app.git"
   type    = string
+}
+
+variable "prefix" {
+  default     = "dev"
+  type        = string
+  description = "prefix based on branch"
 }
 
 
