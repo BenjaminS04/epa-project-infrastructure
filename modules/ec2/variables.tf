@@ -39,6 +39,6 @@ variable "additional_user_data" {
 }
 
 variable "each_key" {
-  type = string
+  type        = string
   description = "locals key for each instance"
 }
