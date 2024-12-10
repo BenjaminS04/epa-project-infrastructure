@@ -21,10 +21,11 @@ variable "app-repo" {
   type    = string
 }
 
-variable "prefix" {
-  default     = "dev"
-  type        = string
-  description = "prefix based on branch"
+variable "environment" {
+  default = "dev"
+  type = string
+  
 }
+
 
 
