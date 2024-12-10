@@ -23,9 +23,9 @@ variable "app-repo" {
 
 variable "environment" {
   description = "Environment to deploy workload"
-  default = "dev"
-  type = string
-  nullable = false
+  default     = "dev"
+  type        = string
+  nullable    = false
 }
 
 
