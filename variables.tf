@@ -8,17 +8,25 @@ variable "ami" {
 }
 variable "instance_type" {
   default = "t2.micro"
-  type =string
+  type    = string
 }
 
 variable "app-branch" {
-  default = "dev"
-  type = string
+  default = "feat/logs" //"dev"
+  type    = string
 }
 
 variable "app-repo" {
   default = "https://github.com/BenjaminS04/epa-project-app.git"
-  type = string
+  type    = string
 }
+
+variable "environment" {
+  description = "Environment to deploy workload"
+  default     = "dev"
+  type        = string
+  nullable    = false
+}
+
 
 

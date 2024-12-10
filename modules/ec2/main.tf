@@ -24,13 +24,17 @@ resource "aws_instance" "ec2" {
     # unique instance user data
 
     ${var.additional_user_data} 
+
+    # notifies all logged in users on linux
+    wall -n "user data complete"
+
     EOF
 
-  
+
   # forces instance to be remade if its user data changes
   user_data_replace_on_change = true
 
-  
+
   lifecycle {
     # makes sure old resource stays live until new one is created to minimize down time
     create_before_destroy = true

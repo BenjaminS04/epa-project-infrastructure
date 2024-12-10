@@ -1,0 +1,41 @@
+name: 'Deploy workload infrastructure'
+
+on:
+    workflow_dispatch:
+env:
+    BRANCH_NAME: ${{github.head_ref || github.ref_name}}
+permissions:
+    id-token: write
+    contents: read
+jobs:
+  terraform_workload:
+    name: 'Deploy workload infrastucture using terraform'
+    runs-on: ubuntu-latest
+    defaults:
+      run: 
+        shell: bash
+    steps: 
+    - name: configure aws credentials
+      uses: aws-actions/configure-aws-credentials@v2
+
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ secrets.AWS_REGION }}
+        TF_VAR_environment: ${{ env.BRANCH_NAME }}
+
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v2
+      with: 
+        terraform_version: 1.8.5
+    
+    - name: Terraform init
+      run: teraform init -backend-config="key=${{ env.BRANCH_NAME }}"
+
+    - name: terraform plan and apply
+      run: |
+        terraform plan --var 'environment=${{ env.BRANCH_NAME }}' --input=false --out terraform-plan
+        terraform apply terraform-apply

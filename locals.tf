@@ -18,17 +18,17 @@ locals {
                 {
                   "file_path": "/var/log/syslog",
                   "log_group_name": "syslog",
-                  "log_stream_name": "{instance_id}-syslog"
+                  "log_stream_name": "{instance_id}"
                 },
                 {
                   "file_path": "/var/log/auth.log",
                   "log_group_name": "auth-log",
-                  "log_stream_name": "{instance_id}-auth"
+                  "log_stream_name": "{instance_id}"
                 },
                 {
                   "file_path": "/var/log/cloud-init-output.log",
                   "log_group_name": "cloud-init-output",
-                  "log_stream_name": "{instance_id}-cloud-init-output",
+                  "log_stream_name": "{instance_id}",
                   "timestamp_format": "%b %d %H:%M:%S"
                 }
               ]
@@ -61,12 +61,12 @@ locals {
       #nginx -t
       sudo sed -i -e 's/<h1>Welcome to nginx!/<h1>target/g' /var/www/html/index.nginx-debian.html
     EOF
-    
-    
-    
-    
-    
-    
+
+
+
+
+
+
     monitor = <<-EOF
 
       # ${timestamp()}  - causes unique user data every apply meaning this ec2 to be remade if user_data_replace_on_change is true
@@ -126,6 +126,16 @@ locals {
       
       sudo chown -R www-data:www-data /var/www/monitorapp
       sudo chmod -R 755 /var/www/monitorapp
+      
+
+
+      # creates ssl self signed key and certificate
+
+      PUBLIC_IP=$(curl -s http://169.254.169.254/latest/meta-data/public-ipv4)
+      sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
+        -keyout /etc/ssl/private/selfsigned.key \
+        -out /etc/ssl/certs/selfsigned.crt \
+        -subj "/C=GB/ST=England/L=Manchester/O=bens EPA/CN=$PUBLIC_IP"
 
       
       
@@ -134,16 +144,24 @@ locals {
       NGINX_CONFIG="/etc/nginx/sites-available/monitorapp"
       cat << 'EOL' | sudo tee $NGINX_CONFIG > /dev/null
       server {
-        listen 80;
+        listen 443 ssl;
         server_name _;
+
+        ssl_certificate /etc/ssl/certs/selfsigned.crt;
+        ssl_certificate_key /etc/ssl/private/selfsigned.key;
+
+        ssl_protocols TLSv1.2 TLSv1.3;
+        ssl_ciphers HIGH:!aNULL:!MD5;
 
         root /var/www/monitorapp;
         index html/index.html;
 
         location / {
-            try_files $uri $uri/ /html/index.html;
+            autoindex on; 
+            try_files $uri $uri/ /index.html;
         }
 
+        # Other location blocks remain the same
         location /css/ {
             alias /var/www/monitorapp/css/;
         }
@@ -152,14 +170,14 @@ locals {
             alias /var/www/monitorapp/js/;
         }
 
-        #proxy api requests to node server
         location /api/ {
-          proxy_pass http://localhost:3000;
-          proxy_http_version 1.1;
-          proxy_set_header Upgrade $http_upgrade;
-          proxy_set_header Connection 'upgrade';
-          proxy_set_header Host $host;
-          proxy_cache_bypass $http_upgrade;
+            proxy_pass http://localhost:3000;
+            proxy_http_version 1.1;
+            proxy_set_header Upgrade $http_upgrade;
+            proxy_set_header Connection 'upgrade';
+            proxy_set_header Connection 'upgrade';
+            proxy_set_header Host $host;
+            proxy_cache_bypass $http_upgrade;
         }
       }
       EOL
