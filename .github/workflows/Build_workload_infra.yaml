@@ -33,7 +33,7 @@ jobs:
         terraform_version: 1.8.5
     
     - name: Terraform init
-      run: teraform init -backend-config="key=${{ env.BRANCH_NAME }}"
+      run: terraform init -backend-config="key=${{ env.BRANCH_NAME }}"
 
     - name: terraform plan and apply
       run: |

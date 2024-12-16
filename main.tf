@@ -26,7 +26,7 @@ module "security_group" { # security group module for ec2
   vpc_id              = module.vpc.vpc_id
   source              = "./modules/sg"
   security_group_name = "${var.environment}-security-group"
-  vpn_ip = var.vpn_ip
+  vpn_ip              = var.vpn_ip
 }
 
 module "internet_gateway" { # internet gateway module for ec2
