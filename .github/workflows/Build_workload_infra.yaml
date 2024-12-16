@@ -14,9 +14,9 @@ jobs:
   terraform_workload:
     name: 'Deploy workload infrastructure using Terraform'
     runs-on: ubuntu-latest
-    default:
-      run:
-        shell: bash
+    # default:
+    #   run:
+    #     shell: bash
     env:
       TF_VAR_environment: ${{ env.BRANCH_NAME }}
     steps:
