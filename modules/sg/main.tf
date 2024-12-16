@@ -16,7 +16,8 @@ resource "aws_security_group" "sg" {
     from_port   = 443
     to_port     = 443
     protocol    = "tcp"
-    cidr_blocks = ["${var.vpn_ip}/32"]
+    //cidr_blocks = ["${var.vpn_ip}/32"]
+    cidr_blocks = [ "0.0.0.0/0" ]  // temporarily open for developmet and testing
   }
 
   // allows ssh connection through the aws console

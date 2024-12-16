@@ -30,7 +30,7 @@ variable "environment" {
 
 variable "vpn_ip" {
   description = "ip to limit access to instances to company ip/vpn"
-  default     = "147.161.144.82"
+  default     = " 195.50.119.196"
 }
 
 
