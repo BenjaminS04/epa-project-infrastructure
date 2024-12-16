@@ -49,4 +49,4 @@ jobs:
 
       - name: Terraform destroy on apply failure
         if: ${{ steps.apply.outcome == 'failure' }}
-          run: terraform destroy -auto-approve
+        run: terraform destroy -auto-approve
