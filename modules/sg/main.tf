@@ -16,15 +16,27 @@ resource "aws_security_group" "sg" {
     from_port   = 443
     to_port     = 443
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks = ["${var.vpn_ip}/32"]
   }
 
-  ingress {
-    from_port   = 22
-    to_port     = 22
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+  // allows ssh connection through the aws console
+  dynamic "ingress" {
+    for_each = data.aws_ip_ranges.ec2_instance_connect.cidr_blocks
+    content {
+      from_port   = 22
+      to_port     = 22
+      protocol    = "tcp"
+      cidr_blocks = [ingress.value]
+    }
+
   }
+
+  # ingress {
+  #   from_port   = 22
+  #   to_port     = 22
+  #   protocol    = "tcp"
+  #   cidr_blocks = ["0.0.0.0/0"]
+  # }
 
   egress {
     from_port   = 0
@@ -32,4 +44,13 @@ resource "aws_security_group" "sg" {
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
+}
+
+data "aws_region" "current" {
+  // returns the region of the currently configured provider
+}
+
+data "aws_ip_ranges" "ec2_instance_connect" {
+  services = ["EC2_INSTANCE_CONNECT"]
+  regions  = [data.aws_region.current.name]
 }

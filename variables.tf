@@ -28,5 +28,10 @@ variable "environment" {
   nullable    = false
 }
 
+variable "vpn_ip" {
+  description = "ip to limit access to instances to company ip/vpn"
+  default = "147.161.144.82"
+}
+
 
 
