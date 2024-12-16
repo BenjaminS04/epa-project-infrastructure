@@ -1,4 +1,4 @@
-name: 'Deploy Workload Infrastructure'
+yamlCopyname: 'Deploy Workload Infrastructure'
 
 on:
   workflow_dispatch:
@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     
     env:
-      TF_VAR_environment: ${{ env.BRANCH_NAME }}
+      TF_VAR_environment: ${{ github.ref_name }}
     
     steps:
       - name: Configure AWS Credentials
@@ -35,13 +35,13 @@ jobs:
           terraform_version: 1.8.5
     
       - name: Terraform Init
-        run: terraform init -backend-config="key=${{ env.BRANCH_NAME }}"
+        run: terraform init -backend-config="key=${{ github.ref_name }}"
 
       - name: Terraform Plan
         id: plan
         run: |
           terraform plan \
-            --var "environment=${{ env.BRANCH_NAME }}" \
+            --var "environment=${{ github.ref_name }}" \
             --input=false \
             --out terraform-plan
 
