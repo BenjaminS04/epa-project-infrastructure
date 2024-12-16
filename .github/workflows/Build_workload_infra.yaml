@@ -38,4 +38,4 @@ jobs:
     - name: terraform plan and apply
       run: |
         terraform plan --var 'environment=${{ env.BRANCH_NAME }}' --input=false --out terraform-plan
-        terraform apply terraform-apply
+        terraform apply terraform-plan
