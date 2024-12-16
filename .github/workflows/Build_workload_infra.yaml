@@ -14,6 +14,8 @@ jobs:
     
     env:
       TF_VAR_environment: ${{ github.ref_name }}
+      TERRAFORM_BUCKET: ${{ secrets.TERRAFORM_STATE_BUCKET }}
+      AWS_REGION: ${{ secrets.AWS_REGION }}
     
     steps:
       - name: Configure AWS Credentials
@@ -30,9 +32,13 @@ jobs:
         uses: hashicorp/setup-terraform@v3
         with: 
           terraform_version: 1.8.5
-    
-      - name: Terraform Init
-        run: terraform init -backend-config="key=${{ github.ref_name }}"
+
+      - name: Terraform Init with Remote Backend
+        run: |
+          terraform init \
+            -backend-config="bucket=${{ env.TERRAFORM_BUCKET }}" \
+            -backend-config="key=${{ github.ref_name }}/terraform.tfstate" \
+            -backend-config="region=${{ env.AWS_REGION }}"
 
       - name: Terraform Plan
         id: plan
