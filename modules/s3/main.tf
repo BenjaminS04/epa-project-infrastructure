@@ -1,7 +1,7 @@
 # Defines the S3 bucket resource and uses tags to name it
 resource "aws_s3_bucket" "bucket" {
   bucket = var.bucket_name
-  region = var.region
+  
 
   # lifecycle {
   #   prevent_destroy = true
@@ -56,7 +56,7 @@ resource "aws_s3_bucket_versioning" "s3_versioning" {
 
 
 resource "aws_s3_bucket" "terraform_state" {
-  region = var.region
+  
   bucket = "epa-backend-terraform-remote-states"
   tags = {
     Name        = "Terraform State Bucket"
