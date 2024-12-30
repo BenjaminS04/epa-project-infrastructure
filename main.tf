@@ -57,10 +57,11 @@ module "iam_policies" { # policy module for ec2 iam role
   bucket_name = module.s3_bucket.bucket_name
 }
 
-module "s3_bucket" { # s3 module to mount to ec2
+module "s3_bucket" { # s3 module for the ec2
   source      = "./modules/s3"
   region      = var.region
   bucket_name = "${var.environment}-s3-bucket-ubecuab"
+  environment = var.environment
 }
 
 
