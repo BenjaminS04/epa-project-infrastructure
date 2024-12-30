@@ -10,8 +10,8 @@ terraform { #sets required providers and versions
 
   backend "s3" {
     bucket  = "epa-backend-terraform-remote-states" # Replace with your S3 bucket name
-    key     = "/${var.environment}-terraform state" # Path within the bucket to store the state file
-    region  = var.region                            # AWS region of the bucket
+    # key     = "/${var.environment}-terraform state" # Path within the bucket to store the state file
+    region  = "us-east-1"                         # AWS region of the bucket
     encrypt = true                                  # Encrypt state file at rest
   }
 }
