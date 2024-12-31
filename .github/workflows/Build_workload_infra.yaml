@@ -44,7 +44,8 @@ jobs:
         if: github.ref_name == 'main'
         run: |
           terraform plan \
-            --var "app-branch=main"
+            --var "vpn_ip=${{ secrets.VPN_IP }}" \
+            --var "app-branch=main" \
             --var "environment=${{ github.ref_name }}" \
             --input=false \
             --out terraform-plan
@@ -53,7 +54,9 @@ jobs:
         if: github.ref_name != 'main'
         run: |
           terraform plan \
-            --var "environment=test" \
+            --var "vpn_ip=${{ secrets.VPN_IP }}" \
+            --var "app-branch=main" \
+            --var "environment=${{ github.ref_name }}" \
             --input=false \
             --out terraform-plan
 
