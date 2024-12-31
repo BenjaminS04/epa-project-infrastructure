@@ -36,7 +36,7 @@ jobs:
       - name: Terraform Init with Remote Backend
         run: |
           terraform init \
-            -backend-configoject=backend-config-${{ github.ref_name }}.conf
+            -backend-config=backend-config-${{ github.ref_name }}.conf \
             -backend-config="region=${{ env.AWS_REGION }}"
 
       - name: Terraform Plan main
