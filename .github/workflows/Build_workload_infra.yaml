@@ -39,11 +39,21 @@ jobs:
             -backend-configoject=backend-config-${{ github.ref_name }}.conf
             -backend-config="region=${{ env.AWS_REGION }}"
 
-      - name: Terraform Plan
+      - name: Terraform Plan main
         id: plan
+        if: github.ref_name == 'main'
         run: |
           terraform plan \
+            --var "app-branch=main"
             --var "environment=${{ github.ref_name }}" \
+            --input=false \
+            --out terraform-plan
+        
+      - name: terraform plan
+        if: github.ref_name != 'main'
+        run: |
+          terraform plan \
+            --var "environment=test" \
             --input=false \
             --out terraform-plan
 
@@ -51,6 +61,6 @@ jobs:
         id: apply
         run: terraform apply terraform-plan
 
-      - name: Terraform Destroy on Failure
-        if: (failure() && steps.apply.outcome == 'failure') && ${{ github.ref_name }} != 'main'
+      - name: Terraform Destroy on Failure 
+        if: failure() && steps.apply.outcome == 'failure' && github.ref_name != 'main'
         run: terraform destroy -auto-approve
