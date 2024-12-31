@@ -8,7 +8,7 @@ terraform { #sets required providers and versions
     }
   }
 
-  
+
 }
 
 provider "aws" {
