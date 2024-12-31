@@ -55,7 +55,7 @@ jobs:
         run: |
           terraform plan \
             --var "vpn_ip=${{ secrets.VPN_IP }}" \
-            --var "app-branch=main" \
+            --var "app-branch=test" \
             --var "environment=${{ github.ref_name }}" \
             --input=false \
             --out terraform-plan
