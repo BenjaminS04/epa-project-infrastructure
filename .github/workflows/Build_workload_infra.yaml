@@ -27,7 +27,7 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Setup Terraform
+      - name: Setup Terraform with specified version
         uses: hashicorp/setup-terraform@v3
         with: 
           terraform_version: 1.8.5
@@ -49,7 +49,7 @@ jobs:
             --input=false \
             --out terraform-plan
         
-      - name: terraform plan
+      - name: terraform plan for non production deployments
         if: github.ref_name != 'main'
         run: |
           terraform plan \
@@ -63,6 +63,7 @@ jobs:
         id: apply
         run: terraform apply terraform-plan
 
-      - name: Terraform Destroy on Failure 
+        # temporary measure while build workflow and backend functionality is completely verified to prevent orphaned resources
+      - name: Terraform Destroy on Failure for non production deployments
         if: failure() && steps.apply.outcome == 'failure' && github.ref_name != 'main'
         run: terraform destroy -auto-approve
