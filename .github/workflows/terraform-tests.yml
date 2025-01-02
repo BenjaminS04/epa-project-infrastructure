@@ -32,7 +32,7 @@ jobs:
         run: |
           terraform init \
             -backend-config=backend-config-test.conf \
-            -backend-config="region=${{ env.AWS_REGION }}"
+            -backend-config="region=${{ secrets.AWS_REGION }}"
 
       # Validate Terraform syntax
       - name: Terraform Validate
