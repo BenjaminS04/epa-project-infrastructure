@@ -7,6 +7,8 @@ terraform { #sets required providers and versions
       version = "5.72.1"
     }
   }
+
+
 }
 
 provider "aws" {
@@ -26,6 +28,7 @@ module "security_group" { # security group module for ec2
   vpc_id              = module.vpc.vpc_id
   source              = "./modules/sg"
   security_group_name = "${var.environment}-security-group"
+  vpn_ip              = var.vpn_ip
 }
 
 module "internet_gateway" { # internet gateway module for ec2
@@ -56,10 +59,11 @@ module "iam_policies" { # policy module for ec2 iam role
   bucket_name = module.s3_bucket.bucket_name
 }
 
-module "s3_bucket" { # s3 module to mount to ec2
+module "s3_bucket" { # s3 module for the ec2
   source      = "./modules/s3"
   region      = var.region
   bucket_name = "${var.environment}-s3-bucket-ubecuab"
+  environment = var.environment
 }
 
 

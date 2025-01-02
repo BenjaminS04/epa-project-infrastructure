@@ -28,8 +28,11 @@ jobs:
           terraform_version: 1.8.5
 
       # Initialize Terraform
-      - name: Terraform Init
-        run: terraform init
+      - name: Terraform Init with Remote Backend
+        run: |
+          terraform init \
+            -backend-config=backend-config-test.conf \
+            -backend-config="region=${{ secrets.AWS_REGION }}"
 
       # Validate Terraform syntax
       - name: Terraform Validate
