@@ -45,6 +45,14 @@ resource "aws_iam_policy" "target_cloudwatch_agent_policy" {
         Effect   = "Allow",
         Resource = "*"
       },
+      {
+        Effect = "Allow",
+        Action = [
+          "s3:GetObject",
+          "s3:PutObject",
+        ],
+        Resource = "arn:aws:s3:::${var.bucket_name}/*"
+      }
     ]
   })
 }

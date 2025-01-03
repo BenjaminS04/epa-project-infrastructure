@@ -72,9 +72,58 @@ locals {
       sed -i 's/#$nrconf{restart} = '"'"'i'"'"';/$nrconf{restart} = '"'"'a'"'"';/g' /etc/needrestart/needrestart.conf
       sed -i "s/#\$nrconf{kernelhints} = -1;/\$nrconf{kernelhints} = -1;/g" /etc/needrestart/needrestart.conf
       
+      set -e
+
+
+      # verifies aws cli install
+
+      if ! command -v aws &> /dev/null; then
+        apt-get update -y
+        apt-get install -y awscli
+      fi
+
+
+      # creates expot log bash file
+
+      cat > /usr/local/bin/export-logs.sh <<'EOL'
+      #!/bin/bash
+      set -euo pipefail
+
+      S3_BUCKET="${var.environment}-${bucket_name}"
+
+      TIMESTAMP="$(date +'%Y%m%d-%H%M%S')"
+      ARCHIVE_FILE="/tmp/logs-$TIMESTAMP.tar.gz"
+
+
+      # Tar up /var/log
+      
+      tar -czf "$ARCHIVE_FILE" /var/log
 
       
-      # install nginx
+      # Upload to s3
+      
+      aws s3 cp "$ARCHIVE_FILE" "s3://$S3_BUCKET/logs-$TIMESTAMP.tar.gz" --storage-class STANDARD_IA
+
+      
+      # Remove local tar
+      
+      rm -f "$ARCHIVE_FILE"
+
+
+      # Make the script executable
+
+      chmod +x /usr/local/bin/export-logs.sh
+
+      # 5. Schedule a cron job at 1:00 AM daily
+      #    This overwrites any existing line referencing "export-logs.sh" in crontab
+      crontab -l 2>/dev/null | grep -v 'export-logs.sh' > /tmp/current_cron
+      echo "0 1 * * * /usr/local/bin/export-logs.sh" >> /tmp/current_cron
+      crontab /tmp/current_cron
+      rm /tmp/current_cron
+
+
+      
+      install nginx
 
       sudo apt install nginx -y
       #nginx -t

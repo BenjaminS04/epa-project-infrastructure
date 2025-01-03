@@ -34,6 +34,12 @@ variable "vpn_ip" {
   type        = string
 }
 
+variable "bucket_name" {
+  description = "name for log bucket"
+  default     = "s3-bucket-bens-epa-logs"
+  type        = string
+}
+
 
 
 
