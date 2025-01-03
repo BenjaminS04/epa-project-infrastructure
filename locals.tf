@@ -89,7 +89,7 @@ locals {
       #!/bin/bash
       set -euo pipefail
 
-      S3_BUCKET="${var.environment}-${bucket_name}"
+      S3_BUCKET="${var.environment}-${var.bucket_name}"
 
       TIMESTAMP="$(date +'%Y%m%d-%H%M%S')"
       ARCHIVE_FILE="/tmp/logs-$TIMESTAMP.tar.gz"
