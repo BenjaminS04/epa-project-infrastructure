@@ -11,6 +11,25 @@ locals {
           "metrics_collection_interval": 60,
           "logfile": "/opt/aws/amazon-cloudwatch-agent/logs/amazon-cloudwatch-agent.log"
         },
+        "metrics": {
+        
+          "append_dimensions": {
+            "InstanceId": "$${aws:InstanceId}"
+          },
+          "metrics_collected": {
+            "mem": {
+              "measurement": [
+                {
+                  "name": "mem_used_percent",        
+                  "rename": "MemoryUtilization",     
+                  "unit": "Percent"                  
+                }
+              ],
+              "metrics_collection_interval": 60
+            }
+            
+          }
+        },
         "logs": {
           "logs_collected": {
             "files": {
