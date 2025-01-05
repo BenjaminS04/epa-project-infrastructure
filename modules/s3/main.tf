@@ -2,6 +2,7 @@
 resource "aws_s3_bucket" "bucket" {
   bucket = var.bucket_name
 
+
   # lifecycle {
   #   prevent_destroy = true
   # }
@@ -12,9 +13,13 @@ resource "aws_s3_bucket" "bucket" {
   }
 }
 
+//----------- bucket acls and versionings ----------
+
 # creates acl for the s3 bucket specified
 resource "aws_s3_bucket_public_access_block" "private" {
+
   bucket = aws_s3_bucket.bucket.id
+
 
   # Blocks the use of public ACLs on this S3 bucket.
   block_public_acls = true
@@ -27,11 +32,17 @@ resource "aws_s3_bucket_public_access_block" "private" {
 
   # Restricts public bucket policies from allowing cross-account access unless explicitly authorized.
   restrict_public_buckets = true
+
+
 }
+
+
 
 # versioning for s3 buckets, means changes are reversable.
 resource "aws_s3_bucket_versioning" "s3_versioning" {
+
   bucket = aws_s3_bucket.bucket.id
+
 
   versioning_configuration {
     status = "Enabled"
@@ -41,3 +52,8 @@ resource "aws_s3_bucket_versioning" "s3_versioning" {
   }
 
 }
+
+
+
+
+
