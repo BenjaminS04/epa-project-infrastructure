@@ -48,7 +48,6 @@ module "ec2" { # ec2 module
   security_group_id    = module.security_group.sg_id
   subnet_id            = module.vpc.subnet_id
   instance_name        = "${each.key}-instance-${var.environment}"
-  bucket_name          = module.s3_bucket.bucket_name
   iam_instance_profile = "${each.key}-EC2InstanceProfile"
   additional_user_data = each.value
   each_key             = each.key
