@@ -46,6 +46,7 @@ jobs:
             --var "vpn_ip=${{ secrets.VPN_IP }}" \
             --var "app-branch=main" \
             --var "environment=${{ github.ref_name }}" \
+            --var "vpn_ip=${{ secrets.SNS }}" \
             --input=false \
             --out terraform-plan
         
@@ -56,6 +57,7 @@ jobs:
             --var "vpn_ip=${{ secrets.VPN_IP }}" \
             --var "app-branch=test" \
             --var "environment=${{ github.ref_name }}" \
+            --var "vpn_ip=${{ secrets.SNS }}" \
             --input=false \
             --out terraform-plan
 
