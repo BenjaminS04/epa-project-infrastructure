@@ -54,7 +54,7 @@ module "ec2" { # ec2 module
 }
 
 module "iam_policies" { # policy module for ec2 iam role
-  source      = "./modules/policies"
+  source = "./modules/policies"
 }
 
 
