@@ -32,13 +32,6 @@ resource "aws_security_group" "sg" {
 
   }
 
-  # ingress {
-  #   from_port   = 22
-  #   to_port     = 22
-  #   protocol    = "tcp"
-  #   cidr_blocks = ["0.0.0.0/0"]
-  # }
-
   egress {
     from_port   = 0
     to_port     = 0
@@ -51,6 +44,7 @@ data "aws_region" "current" {
   // returns the region of the currently configured provider
 }
 
+// gets the ip ranges for the instance connect service, to be added to ssh ingress rule
 data "aws_ip_ranges" "ec2_instance_connect" {
   services = ["EC2_INSTANCE_CONNECT"]
   regions  = [data.aws_region.current.name]

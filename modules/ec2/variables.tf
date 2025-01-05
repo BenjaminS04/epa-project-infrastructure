@@ -22,10 +22,6 @@ variable "instance_name" {
   description = "Name tag for the EC2 instance"
 }
 
-variable "bucket_name" {
-  description = "name of bucket"
-}
-
 variable "iam_instance_profile" {
   description = "ec2 instance iam"
 }

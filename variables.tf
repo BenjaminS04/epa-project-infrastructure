@@ -12,7 +12,7 @@ variable "instance_type" {
 }
 
 variable "app-branch" {
-  default = "feat/logs" //"dev"
+  default = "feat/alerts" //"dev"
   type    = string
 }
 
@@ -31,6 +31,12 @@ variable "environment" {
 variable "vpn_ip" {
   description = "ip to limit access to instances to company ip/vpn"
   default     = " 195.50.119.196"
+  type        = string
+}
+
+variable "sns_arn" {
+  description = "arn for sns"
+  default     = "arn:aws:sns:us-east-1:267239224662:EC2-CPU-Alerts"
   type        = string
 }
 
