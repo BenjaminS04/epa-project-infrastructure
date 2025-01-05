@@ -72,58 +72,6 @@ locals {
       sed -i 's/#$nrconf{restart} = '"'"'i'"'"';/$nrconf{restart} = '"'"'a'"'"';/g' /etc/needrestart/needrestart.conf
       sed -i "s/#\$nrconf{kernelhints} = -1;/\$nrconf{kernelhints} = -1;/g" /etc/needrestart/needrestart.conf
 
-
-      S3_BUCKET_NAME="${var.environment}-${var.bucket_name}"  
-      LOG_DIRECTORY="/var/log"          
-      CRON_SCHEDULE="0 1 * * *"    
-
-
-      # verifies aws cli install
-
-      if ! command -v aws &> /dev/null; then
-        apt-get update -y
-        apt-get install -y awscli
-      fi
-
-
-      # Create the export-logs.sh script
-      cat > /usr/local/bin/export-logs.sh <<EOL
-      #!/bin/bash
-      set -euo pipefail
-
-      # Timestamp for the archive
-      TIMESTAMP="\$(date +'%Y%m%d-%H%M%S')"
-      ARCHIVE_FILE="/tmp/logs-\$TIMESTAMP.tar.gz"
-
-      # Tar up the logs directory
-      tar -czf "\$ARCHIVE_FILE" "$LOG_DIRECTORY"
-
-      # Upload to S3
-      aws s3 cp "\$ARCHIVE_FILE" "s3://$S3_BUCKET_NAME/logs-\$TIMESTAMP.tar.gz" --storage-class STANDARD_IA
-
-      # Remove the local archive
-      rm -f "\$ARCHIVE_FILE"
-      EOL
-      
-
-
-      # Make the script executable
-      chmod +x /usr/local/bin/export-logs.sh
-      
-      if [[ ! -x /usr/local/bin/export-logs.sh ]]; then
-        echo "Failed to make export-logs.sh executable" >&2
-        exit 1
-      fi
-
-      # Schedule a cron job at 1:00 AM daily
-      # This removes any existing exact cron job and adds the new one
-      crontab -l 2>/dev/null | grep -v '^0 1 \* \* \* /usr/local/bin/export-logs.sh$' > /tmp/current_cron || true
-      echo "$CRON_SCHEDULE /usr/local/bin/export-logs.sh" >> /tmp/current_cron
-      crontab /tmp/current_cron
-      rm /tmp/current_cron
-
-
-      
       install nginx
 
       sudo apt install nginx -y

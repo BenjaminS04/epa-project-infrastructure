@@ -112,7 +112,8 @@ resource "aws_iam_policy" "monitor_cloudwatch_agent_policy" {
           "logs:FilterLogEvents",
           "logs:DescribeLogEvents",
           "logs:DescribeLogStreams",
-          "logs:DescribeLogGroups"
+          "logs:DescribeLogGroups",
+          "sns:Publish"
         ],
         Effect   = "Allow",
         Resource = "*"
