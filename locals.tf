@@ -118,7 +118,7 @@ locals {
       
       
       
-      # install node
+      # install node and dotenv
 
       sudo apt-get install -y nodejs npm
 
@@ -129,10 +129,18 @@ locals {
       sudo git clone --branch ${var.app-branch} ${var.app-repo} /var/www/monitorapp
 
 
+      # adds env file
+      cat <<EOT > /var/www/monitorapp/.env
+      AWS_REGION=${var.region}
+      SNS_TOPIC_ARN=${var.sns_arn}
+      EOT
+
+
 
       # create server js folder and move server js file from static files location
 
       cd /var/www/monitorapp
+      npm install dotenv
       sudo npm init -y
       sudo npm install express aws-sdk body-parser
       cd ~
@@ -191,7 +199,6 @@ locals {
             proxy_pass http://localhost:3000;
             proxy_http_version 1.1;
             proxy_set_header Upgrade $http_upgrade;
-            proxy_set_header Connection 'upgrade';
             proxy_set_header Connection 'upgrade';
             proxy_set_header Host $host;
             proxy_cache_bypass $http_upgrade;

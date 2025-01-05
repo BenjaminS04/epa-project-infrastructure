@@ -12,7 +12,7 @@ variable "instance_type" {
 }
 
 variable "app-branch" {
-  default = "feat/metrics" //"dev"
+  default = "feat/alerts" //"dev"
   type    = string
 }
 
@@ -38,6 +38,12 @@ variable "bucket_name" {
   description = "name for log bucket"
   default     = "s3-bucket-bens-epa-logs"
   type        = string
+}
+
+variable "sns_arn" {
+  description = "arn for sns"
+  default     = "arn:aws:sns:us-east-1:267239224662:EC2-CPU-Alerts"
+
 }
 
 
