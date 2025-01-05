@@ -11,6 +11,25 @@ locals {
           "metrics_collection_interval": 60,
           "logfile": "/opt/aws/amazon-cloudwatch-agent/logs/amazon-cloudwatch-agent.log"
         },
+        "metrics": {
+        
+          "append_dimensions": {
+            "InstanceId": "$${aws:InstanceId}"
+          },
+          "metrics_collected": {
+            "mem": {
+              "measurement": [
+                {
+                  "name": "mem_used_percent",        
+                  "rename": "MemoryUtilization",     
+                  "unit": "Percent"                  
+                }
+              ],
+              "metrics_collection_interval": 60
+            }
+            
+          }
+        },
         "logs": {
           "logs_collected": {
             "files": {
@@ -52,10 +71,8 @@ locals {
       sudo apt upgrade -y && sudo apt install -y
       sed -i 's/#$nrconf{restart} = '"'"'i'"'"';/$nrconf{restart} = '"'"'a'"'"';/g' /etc/needrestart/needrestart.conf
       sed -i "s/#\$nrconf{kernelhints} = -1;/\$nrconf{kernelhints} = -1;/g" /etc/needrestart/needrestart.conf
-      
 
-      
-      # install nginx
+      install nginx
 
       sudo apt install nginx -y
       #nginx -t
@@ -101,7 +118,7 @@ locals {
       
       
       
-      # install node
+      # install node and dotenv
 
       sudo apt-get install -y nodejs npm
 
@@ -112,10 +129,18 @@ locals {
       sudo git clone --branch ${var.app-branch} ${var.app-repo} /var/www/monitorapp
 
 
+      # adds env file
+      cat <<EOT > /var/www/monitorapp/.env
+      AWS_REGION=${var.region}
+      SNS_TOPIC_ARN=${var.sns_arn}
+      EOT
+
+
 
       # create server js folder and move server js file from static files location
 
       cd /var/www/monitorapp
+      npm install dotenv
       sudo npm init -y
       sudo npm install express aws-sdk body-parser
       cd ~
@@ -174,7 +199,6 @@ locals {
             proxy_pass http://localhost:3000;
             proxy_http_version 1.1;
             proxy_set_header Upgrade $http_upgrade;
-            proxy_set_header Connection 'upgrade';
             proxy_set_header Connection 'upgrade';
             proxy_set_header Host $host;
             proxy_cache_bypass $http_upgrade;

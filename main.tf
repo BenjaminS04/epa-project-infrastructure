@@ -48,23 +48,16 @@ module "ec2" { # ec2 module
   security_group_id    = module.security_group.sg_id
   subnet_id            = module.vpc.subnet_id
   instance_name        = "${each.key}-instance-${var.environment}"
-  bucket_name          = module.s3_bucket.bucket_name
   iam_instance_profile = "${each.key}-EC2InstanceProfile"
   additional_user_data = each.value
   each_key             = each.key
 }
 
 module "iam_policies" { # policy module for ec2 iam role
-  source      = "./modules/policies"
-  bucket_name = module.s3_bucket.bucket_name
+  source = "./modules/policies"
 }
 
-module "s3_bucket" { # s3 module for the ec2
-  source      = "./modules/s3"
-  region      = var.region
-  bucket_name = "${var.environment}-s3-bucket-ubecuab"
-  environment = var.environment
-}
+
 
 
 
