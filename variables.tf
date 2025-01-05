@@ -34,12 +34,6 @@ variable "vpn_ip" {
   type        = string
 }
 
-variable "bucket_name" {
-  description = "name for log bucket"
-  default     = "s3-bucket-bens-epa-logs"
-  type        = string
-}
-
 variable "sns_arn" {
   description = "arn for sns"
   default     = "arn:aws:sns:us-east-1:267239224662:EC2-CPU-Alerts"

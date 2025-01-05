@@ -1,29 +1,3 @@
-# User S3 Policy
-resource "aws_iam_policy" "user_s3_policy" {
-  name = "UserS3AccessPolicy"
-  policy = jsonencode({
-    Version = "2012-10-17",
-    Statement = [
-      {
-        Effect = "Allow",
-        Action = [
-          "s3:ListBucket",
-          "s3:GetBucketLocation"
-        ],
-        Resource = "arn:aws:s3:::${var.bucket_name}"
-      },
-      {
-        Effect = "Allow",
-        Action = [
-          "s3:GetObject",
-          "s3:PutObject",
-          "s3:DeleteObject"
-        ],
-        Resource = "arn:aws:s3:::${var.bucket_name}/*"
-      }
-    ]
-  })
-}
 
 
 //--- target app instance policy
@@ -44,14 +18,6 @@ resource "aws_iam_policy" "target_cloudwatch_agent_policy" {
         ],
         Effect   = "Allow",
         Resource = "*"
-      },
-      {
-        Effect = "Allow",
-        Action = [
-          "s3:GetObject",
-          "s3:PutObject",
-        ],
-        Resource = "arn:aws:s3:::${var.bucket_name}/*"
       }
     ]
   })
@@ -76,11 +42,6 @@ resource "aws_iam_role" "target_ec2_service_role" {
   })
 }
 
-# Attach S3 Policy to the Role for target instance
-resource "aws_iam_role_policy_attachment" "target_user_policy_attachment" {
-  role       = aws_iam_role.target_ec2_service_role.name
-  policy_arn = aws_iam_policy.user_s3_policy.arn
-}
 
 # Attach CloudWatch Agent Policy to the Role for target instance 
 resource "aws_iam_role_policy_attachment" "target_cloudwatch_agent_policy_attachment" {
@@ -139,12 +100,6 @@ resource "aws_iam_role" "monitor_ec2_service_role" {
       },
     ]
   })
-}
-
-# Attach S3 Policy to the Role for monitor instance
-resource "aws_iam_role_policy_attachment" "monitor_user_policy_attachment" {
-  role       = aws_iam_role.monitor_ec2_service_role.name
-  policy_arn = aws_iam_policy.user_s3_policy.arn
 }
 
 # Attach CloudWatch Agent Policy to the Role for monitor instance 
