@@ -1,8 +1,8 @@
 # sns_topic
 
 resource "aws_sns_topic" "alerts" {
-  name = "${var.environment}-${var.sns_topic_name}"
-
+  name              = "${var.environment}-${var.sns_topic_name}"
+  kms_master_key_id = "alias/aws/sns"
   tags = {
     Environment = var.environment
   }
