@@ -58,8 +58,8 @@ module "iam_policies" { # policy module for ec2 iam role
 }
 
 module "sns" {
-  source = "./modules/sns"
-  environment = var.environment
-  sns_topic_name = "monitoring-app-alerts"
+  source            = "./modules/sns"
+  environment       = var.environment
+  sns_topic_name    = "monitoring-app-alerts"
   sns_subscriptions = var.sns_subscriptions
 }

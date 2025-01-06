@@ -42,8 +42,8 @@ variable "vpn_ip" {
 
 variable "sns_subscriptions" {
   description = "sets the emails that recieve alerts"
-  type = list(string)
-  default = ["benjamin.scanlon@jdplc.com", "benscanloncerts@gmail.com"]
+  type        = list(string)
+  default     = ["benjamin.scanlon@jdplc.com", "benscanloncerts@gmail.com"]
 }
 
 
