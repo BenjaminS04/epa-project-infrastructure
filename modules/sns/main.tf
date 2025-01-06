@@ -13,6 +13,4 @@ resource "aws_sns_topic_subscription" "email_alerts_subscription" {
     topic_arn = aws_sns_topic.alerts.arn
     protocol = "email"
     endpoint = each.key
-    
-  
 }
