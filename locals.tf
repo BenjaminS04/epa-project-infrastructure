@@ -1,6 +1,7 @@
-# user data for the instances
+# define locals for terraform configuration
 locals {
   instances = {
+    # Define a map of instances with different user data scripts
     target = <<-EOF
     
       # creates cloudwatch config file for sending logs to cloudwatch
@@ -72,10 +73,10 @@ locals {
       sed -i 's/#$nrconf{restart} = '"'"'i'"'"';/$nrconf{restart} = '"'"'a'"'"';/g' /etc/needrestart/needrestart.conf
       sed -i "s/#\$nrconf{kernelhints} = -1;/\$nrconf{kernelhints} = -1;/g" /etc/needrestart/needrestart.conf
 
-      install nginx
+      # install nginx
 
       sudo apt install nginx -y
-      #nginx -t
+      nginx -t
       sudo sed -i -e 's/<h1>Welcome to nginx!/<h1>target/g' /var/www/html/index.nginx-debian.html
     EOF
 
@@ -132,7 +133,7 @@ locals {
       # adds env file
       cat <<EOT > /var/www/monitorapp/.env
       AWS_REGION=${var.region}
-      SNS_TOPIC_ARN=${var.sns_arn}
+      SNS_TOPIC_ARN=${module.sns.topic_arn}
       EOT
 
 
