@@ -34,11 +34,6 @@ variable "vpn_ip" {
   type        = string
 }
 
-# variable "sns_arn" {
-#   description = "arn for sns"
-#   default     = "arn:aws:sns:us-east-1:267239224662:EC2-CPU-Alerts"
-#   type        = string
-# }
 
 variable "sns_subscriptions" {
   description = "sets the emails that recieve alerts"
