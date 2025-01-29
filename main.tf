@@ -51,10 +51,12 @@ module "ec2" { # ec2 module
   iam_instance_profile = "${each.key}-EC2InstanceProfile"
   additional_user_data = each.value
   each_key             = each.key
+  prefix               = var.environment
 }
 
 module "iam_policies" { # policy module for ec2 iam role
   source = "./modules/policies"
+  prefix = var.environment
 }
 
 module "sns" {

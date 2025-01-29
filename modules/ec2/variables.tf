@@ -34,3 +34,9 @@ variable "each_key" {
   type        = string
   description = "locals key for each instance"
 }
+
+variable "prefix" {
+  type        = string
+  description = "environment"
+
+}

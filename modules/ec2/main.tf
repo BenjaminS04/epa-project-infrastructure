@@ -3,7 +3,7 @@ resource "aws_instance" "ec2" {
   ami                  = var.ami
   instance_type        = var.instance_type
   key_name             = var.key_name
-  iam_instance_profile = "${var.each_key}-EC2InstanceProfile"
+  iam_instance_profile = "${var.prefix}-${var.each_key}-EC2InstanceProfile"
   metadata_options {
     http_tokens = "required"
   }

@@ -4,7 +4,7 @@
 
 # CloudWatch Agent Policy for target instance
 resource "aws_iam_policy" "target_cloudwatch_agent_policy" {
-  name = "target_cloudwatch_agent_policy"
+  name = "${var.prefix}_target_cloudwatch_agent_policy"
   policy = jsonencode({
     Version = "2012-10-17",
     Statement = [
@@ -25,7 +25,7 @@ resource "aws_iam_policy" "target_cloudwatch_agent_policy" {
 
 # IAM Role for EC2 for target instance
 resource "aws_iam_role" "target_ec2_service_role" {
-  name = "target_EC2ServiceRole"
+  name = "${var.prefix}_target_EC2ServiceRole"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17",
@@ -51,7 +51,7 @@ resource "aws_iam_role_policy_attachment" "target_cloudwatch_agent_policy_attach
 
 # IAM Instance Profile for EC2 for target instance
 resource "aws_iam_instance_profile" "target_ec2_instance_profile" {
-  name = "target-EC2InstanceProfile"
+  name = "${var.prefix}-target-EC2InstanceProfile"
   role = aws_iam_role.target_ec2_service_role.name
 }
 
@@ -61,7 +61,7 @@ resource "aws_iam_instance_profile" "target_ec2_instance_profile" {
 
 # CloudWatch Agent Policy for monitor instance
 resource "aws_iam_policy" "monitor_cloudwatch_agent_policy" {
-  name = "monitor_cloudwatch_agent_policy"
+  name = "${var.prefix}_monitor_cloudwatch_agent_policy"
   policy = jsonencode({
     Version = "2012-10-17",
     Statement = [
@@ -85,7 +85,7 @@ resource "aws_iam_policy" "monitor_cloudwatch_agent_policy" {
 
 # IAM Role for EC2 for monitor instance
 resource "aws_iam_role" "monitor_ec2_service_role" {
-  name = "monitor_EC2ServiceRole"
+  name = "${var.prefix}_monitor_EC2ServiceRole"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17",
@@ -110,6 +110,6 @@ resource "aws_iam_role_policy_attachment" "monitor_cloudwatch_agent_policy_attac
 
 # IAM Instance Profile for EC2 for monitor instance
 resource "aws_iam_instance_profile" "monitor_ec2_instance_profile" {
-  name = "monitor-EC2InstanceProfile"
+  name = "${var.prefix}-monitor-EC2InstanceProfile"
   role = aws_iam_role.monitor_ec2_service_role.name
 }
